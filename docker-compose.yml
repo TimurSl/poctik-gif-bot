@@ -1,0 +1,11 @@
+services:
+  gif_bot:
+    build: .
+    container_name: gif_bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POCTIKBOT_WORK_DIR: /app/temp
+    volumes:
+      - ./temp:/app/temp        # временные файлы снаружи, чтобы не потерялись
