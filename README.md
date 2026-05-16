@@ -41,6 +41,8 @@ Use the NixOS module from another flake:
           services.poctikbot = {
             enable = true;
             tokenFile = "/run/secrets/poctikbot-token";
+            user = "poctikbot";
+            group = "poctikbot";
           };
         }
       ];

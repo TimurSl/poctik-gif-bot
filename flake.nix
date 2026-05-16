@@ -133,6 +133,18 @@
               default = "/var/lib/poctikbot";
               description = "Directory used for temporary downloaded and rendered media.";
             };
+
+            user = lib.mkOption {
+              type = lib.types.str;
+              default = "poctikbot";
+              description = "User account that runs the bot service.";
+            };
+
+            group = lib.mkOption {
+              type = lib.types.str;
+              default = "poctikbot";
+              description = "Group account that runs the bot service.";
+            };
           };
 
           config = lib.mkIf cfg.enable {
@@ -142,6 +154,13 @@
                 message = "services.poctikbot.tokenFile or services.poctikbot.environmentFile must be set.";
               }
             ];
+
+            users.groups.${cfg.group} = { };
+            users.users.${cfg.user} = {
+              isSystemUser = true;
+              group = cfg.group;
+              home = cfg.workDir;
+            };
 
             systemd.services.poctikbot = {
               description = "PocTikBot Telegram media-to-GIF bot";
@@ -161,7 +180,8 @@
                 Restart = "on-failure";
                 RestartSec = "5s";
 
-                DynamicUser = true;
+                User = cfg.user;
+                Group = cfg.group;
                 StateDirectory = "poctikbot";
                 WorkingDirectory = cfg.workDir;
                 ReadWritePaths = [ cfg.workDir ];
